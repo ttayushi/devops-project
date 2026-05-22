@@ -1,4 +1,3 @@
-# fixed pipeline
 name: Deploy to EC2
 
 on:
