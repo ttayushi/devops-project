@@ -1,0 +1,27 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: 3.110.87.192
+        username: ubuntu
+        key: ${{ secrets.EC2_KEY }}
+        script: |
+          cd devops-project
+          git pull
+          docker build -t node-app .
+          docker stop node-app || true
+          docker rm node-app || true
+          docker run -d -p 3000:3000 --name node-app node-app
